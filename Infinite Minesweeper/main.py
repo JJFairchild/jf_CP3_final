@@ -18,4 +18,10 @@ def area(x,y):
     return area
 
 while running:
-    pass
+    # Events
+    for event in pygame.event.get():
+        # Quit game
+        if event.type == pygame.QUIT:
+            running = False
+
+    pygame.display.flip()
