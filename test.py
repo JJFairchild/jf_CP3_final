@@ -9,13 +9,32 @@ spacing = tile_size*9/8
 offset = [0,0]
 first_frame = True
 drag = False
-scroll = False
+scrolling = False
 mouse = pygame.mouse.get_pos()
 
 
 def stow(pos):
     pos = ((mouse[0]+offset[0])/(spacing), (mouse[1]+offset[1])/(spacing))
     return (math.floor(pos[0]), math.floor(pos[1]))
+
+def scroll(type, mouse, offset, tile_size):
+    # Save current tile sizes for use later
+    old_tile_size = tile_size
+    old_spacing = old_tile_size * 9/8
+
+    # Apply zoom
+    if type > 0 and tile_size < 600:
+        tile_size *= 9/8
+    elif type < 0 and tile_size > 30:
+        tile_size /= 9/8
+
+    spacing = tile_size * 9/8
+
+    # Compute new offset so tile_x and tile_y do not change under mouse
+    offset[0] = (offset[0] + mouse[0]) / old_spacing * spacing - mouse[0]
+    offset[1] = (offset[1] + mouse[1]) / old_spacing * spacing - mouse[1]
+
+    return tile_size, spacing, offset
 
 running = True
 while running:
@@ -33,27 +52,21 @@ while running:
                 drag = True
 
         if event.type == pygame.MOUSEWHEEL:
-            scroll = True
-            if event.y > 0:
-                tile_size *= 9/8
-                spacing = tile_size*9/8
-            elif event.y < 0:
-                tile_size /= 9/8
-                spacing = tile_size*9/8
+            scrolling = True
+            pos = pygame.mouse.get_pos()
+            tile_size, spacing, offset = scroll(event.y, pos, offset, tile_size)
 
         if event.type == pygame.MOUSEBUTTONUP and event.button == 3:
             drag = False
 
     new_mouse = pygame.mouse.get_pos()
-    if (drag and mouse != new_mouse) or first_frame or scroll:
+    if (drag and mouse != new_mouse) or first_frame or scrolling:
         # Drag movement
         offset[0] += (mouse[0] - new_mouse[0])
         offset[1] += (mouse[1] - new_mouse[1])
         mouse = new_mouse
 
-        scroll = False
-        print(offset)
-        
+        scrolling = False       
 
         # Draw screen
         screen.fill((50,50,50))
