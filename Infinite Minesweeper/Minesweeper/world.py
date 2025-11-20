@@ -1,5 +1,5 @@
 from board_manager import BoardManager
-from main import area
+from Miscellaneous.helpers import area
 
 class World:
     """Handles Infinite Minesweeper logic"""

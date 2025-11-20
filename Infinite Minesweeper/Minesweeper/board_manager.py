@@ -1,7 +1,7 @@
 import random
 
 from tile import Tile
-from main import area
+from Miscellaneous.helpers import area
 
 class BoardManager:
     """Handles tiles and gathers data about them"""
