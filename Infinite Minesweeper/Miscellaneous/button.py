@@ -37,23 +37,3 @@ class Button:
         tx = self.rect.x + (self.rect.w - text_surface.get_width()) // 2
         ty = self.rect.y + (self.rect.h - text_surface.get_height()) // 2
         screen.blit(text_surface, (tx, ty))
-
-
-pygame.init()
-
-
-screen = pygame.display.set_mode((800,600))
-
-button = Button(100, 300, 200, 60, text="Click Me!")
-
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        
-        if button.handle_event(event):
-            print("Button clicked!")
-
-    button.draw(screen)
-    pygame.display.flip()

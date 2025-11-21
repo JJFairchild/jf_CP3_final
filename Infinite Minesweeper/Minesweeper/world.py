@@ -1,5 +1,10 @@
-from board_manager import BoardManager
+import math
+
+from Minesweeper.board_manager import BoardManager
 from Miscellaneous.helpers import area
+
+import pygame
+pygame.init()
 
 class World:
     """Handles Infinite Minesweeper logic"""
@@ -59,3 +64,10 @@ class World:
                 neighbor = self.manager.getTile(i, j)
                 if not neighbor.flagged and not neighbor.revealed:
                     self.directRev(i, j)
+
+    def draw(self, screen, camera):
+        """Draws the viewable world on the screen"""
+        screen.fill((50,50,50))
+        for x in range(math.floor(1200/(camera.spacing))+2):
+            for y in range(math.floor(1200/(camera.spacing))+2):
+                pygame.draw.rect(screen, (200,200,200), (x*camera.spacing - camera.offset[0]%camera.spacing, y*camera.spacing - camera.offset[1]%camera.spacing, camera.tile_size, camera.tile_size))

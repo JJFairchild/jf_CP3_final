@@ -12,8 +12,12 @@ from Menus.start import Start
 #from Menus.leaderboard import Leaderboard
 #from Menus.options import Options
 
+if running:
+    screen = pygame.display.set_mode((1200, 1200))
+    start = Start(screen, 0.15)
+
 class Game:
-    def run(self):
+    def run(self, running):
         while running:
             # Events
             for event in pygame.event.get():
@@ -21,7 +25,9 @@ class Game:
                 if event.type == pygame.QUIT:
                     running = False
 
+            start.draw()
             pygame.display.flip()
 
-if __name__ == "main":
-    Game.run()
+if __name__ == "__main__":
+    game = Game()
+    game.run(running)

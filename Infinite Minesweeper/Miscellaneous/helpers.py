@@ -1,5 +1,5 @@
 def area(x,y):
-    """Function used to find the coordinates of a tile's neighbors. Used in multiple files."""
+    """Function used to find the coordinates of a tile's neighbors."""
     area = []
     for x_off in range(-1, 2):
         for y_off in range(-1, 2):

@@ -1,6 +1,6 @@
 import random
 
-from tile import Tile
+from Minesweeper.tile import Tile
 from Miscellaneous.helpers import area
 
 class BoardManager:
