@@ -12,21 +12,27 @@ from Menus.start import Start
 #from Menus.leaderboard import Leaderboard
 #from Menus.options import Options
 
-if running:
-    screen = pygame.display.set_mode((1200, 1200))
-    start = Start(screen, 0.15)
-
 class Game:
     def run(self, running):
+        if running:
+            pygame.init()
+            screen = pygame.display.set_mode((1200, 1200))
+            mouse = pygame.mouse.get_pos()
+            start = Start(screen, 0.15)
+
         while running:
+            new_mouse = pygame.mouse.get_pos()
             # Events
             for event in pygame.event.get():
                 # Quit game
                 if event.type == pygame.QUIT:
                     running = False
+                    
+                start.handleEvent(event)
 
-            start.draw()
+            start.draw(mouse, new_mouse)
             pygame.display.flip()
+            mouse = pygame.mouse.get_pos()
 
 if __name__ == "__main__":
     game = Game()

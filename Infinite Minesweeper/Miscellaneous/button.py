@@ -14,7 +14,7 @@ class Button:
         # Track if mouse was pressed earlier (to detect release)
         self._pressed_inside = False
 
-    def handle_event(self, event):
+    def handleEvent(self, event):
         """Detects if the mouse was clicked and released inside the box."""
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):

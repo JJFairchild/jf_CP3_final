@@ -15,24 +15,26 @@ class Start(Menu):
         self.seedbox = TextBox(100, 300, 300, 50, mutable=True, color=(255,255,255), text_color=(0,0,0), limit=20)
         self.button = Button(150, 200, 150, 60, color=(255,255,255), text_color=(0,0,0), text="Generate seed\nfor me")
         self.world = World(self.seed, self.mine_prob)
-        self.camera = Camera
 
-    def handle_event(self, event):
-        self.seedbox.handle_event(event)
-        if self.button.handle_event(event):
+    def handleEvent(self, event):
+        self.seedbox.handleEvent(event)
+        if self.button.handleEvent(event):
             if self.button.text == "Generate seed\nfor me":
                 self.seed = str(random.randint(0, 10000000))
             else:
                 self.seed = self.seedbox.text
+            self.started = True
             self.start()
+        if self.started:
+            self.world.handleEvent(event)
 
     def start(self):
         if self.seed != "":
             pass
 
-    def draw(self):
+    def draw(self, mouse, new_mouse):
         if self.started:
-            self.world.draw(self.screen, self.camera)
+            self.world.draw(self.screen, mouse, new_mouse)
         else:
             if self.seedbox.text == "":
                 self.button.text = "Generate seed\nfor me"

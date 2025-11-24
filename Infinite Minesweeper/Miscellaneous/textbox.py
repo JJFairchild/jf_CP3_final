@@ -14,7 +14,7 @@ class TextBox:
         self.font = pygame.font.Font(None, size)
         self.active = False  # Whether the box is selected
 
-    def handle_event(self, event):
+    def handleEvent(self, event):
         """Handles input events for the text box"""
         if event.type == pygame.MOUSEBUTTONDOWN:
             self.active = self.rect.collidepoint(event.pos)
