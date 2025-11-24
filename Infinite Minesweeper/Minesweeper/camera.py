@@ -12,7 +12,7 @@ class Camera:
     def stow(self, x,y):
         """Converts screen coordinates to coordinates on the tile grid"""
         pos = ((x+self.x)/self.spacing, (y+self.y)/self.spacing)
-        return (math.floor(pos[0]), math.floor(pos[1]))
+        return math.floor(pos[0]), math.floor(pos[1])
 
     def pan(self, mouse, new_mouse):
         """Moves the offset according to difference in mouse position"""

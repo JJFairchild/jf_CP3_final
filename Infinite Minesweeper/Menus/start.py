@@ -7,7 +7,9 @@ from Miscellaneous.button import Button
 from Miscellaneous.textbox import TextBox
 
 class Start(Menu):
+    """Handles switching between the start game screen and the world"""
     def __init__(self, screen, mine_prob):
+        """Initializes necessary values and objects"""
         self.screen = screen
         self.mine_prob = mine_prob
         self.started = False
@@ -17,22 +19,26 @@ class Start(Menu):
         self.world = World(self.seed, self.mine_prob)
 
     def handleEvent(self, event):
-        self.seedbox.handleEvent(event)
-        if self.button.handleEvent(event):
-            if self.button.text == "Generate seed\nfor me":
-                self.seed = str(random.randint(0, 10000000))
-            else:
-                self.seed = self.seedbox.text
-            self.started = True
-            self.start()
+        """Handles incoming events and forks them to either the world or menu depending on which is being used"""
         if self.started:
             self.world.handleEvent(event)
+        else:
+            self.seedbox.handleEvent(event)
+            if self.button.handleEvent(event):
+                if self.button.text == "Generate seed\nfor me":
+                    self.seed = str(random.randint(-1000000, 1000000))
+                else:
+                    self.seed = self.seedbox.text
+                self.started = True
+                self.start()
 
     def start(self):
+        """Keeps track of what is happening while the world is running"""
         if self.seed != "":
             pass
 
     def draw(self, mouse, new_mouse):
+        """Draws either the world or the start menu on the screen depending on which is being used."""
         if self.started:
             self.world.draw(self.screen, mouse, new_mouse)
         else:

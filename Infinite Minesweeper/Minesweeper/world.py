@@ -19,7 +19,7 @@ class World:
         self.manager = BoardManager(self.tiles, seed, mine_prob)
         self.camera = Camera()
 
-    def directRev(self, x, y):
+    def reveal(self, x, y):
         """Directly reveals a single tile. Also capable of calling floodRev()."""
         if self.game_over:
             return
@@ -33,6 +33,8 @@ class World:
                 self.game_over = True
             elif mines == 0:
                 self.floodRev(x,y)
+        else:
+            self.chordRev(x,y)
 
     def floodRev(self, x, y):
         """If a tile has 0 surrounding mines, reveals surrounding tiles in a recursive flood effect."""
@@ -66,13 +68,15 @@ class World:
             for i, j in area(x, y):
                 neighbor = self.manager.getTile(i, j)
                 if not neighbor.flagged and not neighbor.revealed:
-                    self.directRev(i, j)
+                    self.reveal(i, j)
 
     def handleEvent(self, event):
+        """Handles incoming events for the world."""
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 pos = pygame.mouse.get_pos()
-                print(self.camera.stow(pos[0],pos[1]))
+                x,y = self.camera.stow(pos[0],pos[1])
+                self.reveal(x,y)
             if event.button == 3:
                 self.dragging = True
 

@@ -2,7 +2,7 @@ import pygame
 
 class TextBox:
     """Generic and customizable pygame text box"""
-    def __init__(self, x, y, w, h, mutable=False, text="", color=(255, 255, 255), text_color=(0, 0, 0), limit=20, size=32):
+    def __init__(self, x, y, w, h, mutable, text="", color=(255, 255, 255), text_color=(0, 0, 0), limit=20, size=32):
         """Initializes necessary values"""
         self.rect = pygame.Rect(x, y, w, h)
         self.mutable = mutable
@@ -16,15 +16,16 @@ class TextBox:
 
     def handleEvent(self, event):
         """Handles input events for the text box"""
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            self.active = self.rect.collidepoint(event.pos)
+        if self.mutable:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self.active = self.rect.collidepoint(event.pos)
 
-        if event.type == pygame.KEYDOWN and self.active:
-            if event.key == pygame.K_BACKSPACE and self.mutable:
-                self.text = self.text[:-1]
-            else:
-                if event.unicode.isprintable() and len(self.text) < self.limit and self.mutable:
-                    self.text += event.unicode
+            if event.type == pygame.KEYDOWN and self.active:
+                if event.key == pygame.K_BACKSPACE:
+                    self.text = self.text[:-1]
+                else:
+                    if event.unicode.isprintable() and len(self.text) < self.limit:
+                        self.text += event.unicode
 
     def draw(self, screen):
         """Creates the text box on the screen"""

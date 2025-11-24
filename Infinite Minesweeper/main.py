@@ -8,17 +8,19 @@ except:
     print("Failed to import pygame. Type 'pip install pygame' into the terminal.")
     running = False
 
-from Menus.start import Start
-#from Menus.leaderboard import Leaderboard
-#from Menus.options import Options
-
 class Game:
+    """Main class"""
     def run(self, running):
+        """Runs the game"""
         if running:
+            from Menus.start import Start
+            #from Menus.leaderboard import Leaderboard
+            #from Menus.options import Options
+
             pygame.init()
             screen = pygame.display.set_mode((1200, 1200))
-            mouse = pygame.mouse.get_pos()
             start = Start(screen, 0.15)
+            mouse = pygame.mouse.get_pos()
 
         while running:
             new_mouse = pygame.mouse.get_pos()
