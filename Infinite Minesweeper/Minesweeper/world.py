@@ -3,6 +3,7 @@ import math
 from Minesweeper.board_manager import BoardManager
 from Minesweeper.camera import Camera
 from Miscellaneous.helpers import area
+from Miscellaneous.textbox import TextBox
 
 import pygame
 
@@ -14,10 +15,11 @@ class World:
         self.mine_prob = mine_prob
         self.tiles = {}
         self.game_over = False
-        self.scrolling = True
+        self.needs_update = True
         self.dragging = False
         self.manager = BoardManager(self.tiles, seed, mine_prob)
         self.camera = Camera()
+        self.font = pygame.font.Font(None, 64)
 
     def reveal(self, x, y):
         """Directly reveals a single tile. Also capable of calling floodRev()."""
@@ -77,26 +79,53 @@ class World:
                 pos = pygame.mouse.get_pos()
                 x,y = self.camera.stow(pos[0],pos[1])
                 self.reveal(x,y)
+                self.needs_update = True
             if event.button == 3:
                 self.dragging = True
 
         if event.type == pygame.MOUSEWHEEL:
-            self.scrolling = True
+            self.needs_update = True
             pos = pygame.mouse.get_pos()
-            self.camera.scroll(event.y, pos[0],pos[1])
+            self.camera.zoom(event.y, pos[0],pos[1])
 
         if event.type == pygame.MOUSEBUTTONUP and event.button == 3:
             self.dragging = False
 
     def draw(self, screen, mouse, new_mouse):
         """Draws the viewable world on the screen"""
-        if (self.dragging and mouse != new_mouse) or self.scrolling:
+        if (self.dragging and mouse != new_mouse) or self.needs_update:
             # Drag movement
             self.camera.x += (mouse[0] - new_mouse[0])
             self.camera.y += (mouse[1] - new_mouse[1])
 
-            self.scrolling = False
+            self.needs_update = False
             screen.fill((50,50,50))
+
+            # Display every tile on the screen
             for x in range(math.floor(1200/(self.camera.spacing))+2):
                 for y in range(math.floor(1200/(self.camera.spacing))+2):
-                    pygame.draw.rect(screen, (200,200,200), (x*self.camera.spacing - self.camera.x%self.camera.spacing, y*self.camera.spacing - self.camera.y%self.camera.spacing, self.camera.tile_size, self.camera.tile_size))
+                    tx = x*self.camera.spacing - self.camera.x%self.camera.spacing
+                    ty = y*self.camera.spacing - self.camera.y%self.camera.spacing
+                    tile_coords = self.camera.stow(tx+self.camera.spacing/3, ty+self.camera.spacing/3)
+                    tile = self.manager.getTile(tile_coords[0], tile_coords[1])
+
+                    color = (200,200,200)
+                    if tile.revealed:
+                        color = (150,150,150)
+                        if tile.mine:
+                            color = (255,0,0)
+                    # Create the tile
+                    pygame.draw.rect(
+                        screen, color, 
+                        (tx, ty, self.camera.tile_size, self.camera.tile_size)
+                    )
+
+                    # Create the number indicator
+                    mines = self.manager.parseNeighbors(x,y)["mines"]
+                    if mines and tile.revealed and not tile.mine:
+                        text_surface = self.font.render(str(mines), True, (0,0,0))
+                        tx += (self.camera.tile_size - text_surface.get_width()) // 2
+                        ty += (self.camera.tile_size - text_surface.get_height()) // 2
+                        screen.blit(text_surface, (tx, ty))
+
+                    #TextBox(x*self.camera.spacing - self.camera.x%self.camera.spacing, y*self.camera.spacing - self.camera.y%self.camera.spacing, self.camera.tile_size, self.camera.tile_size, False, color=(200,200,200), text_color=(0, 0, 0), limit=1).draw(screen) This was too laggy
