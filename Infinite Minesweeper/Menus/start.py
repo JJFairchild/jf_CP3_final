@@ -16,7 +16,6 @@ class Start(Menu):
         self.seed = ""
         self.seedbox = TextBox(100, 300, 300, 50, mutable=True, color=(255,255,255), text_color=(0,0,0), limit=20)
         self.button = Button(150, 200, 150, 60, color=(255,255,255), text_color=(0,0,0), text="Generate seed\nfor me")
-        self.world = World(self.seed, self.mine_prob)
 
     def handleEvent(self, event):
         """Handles incoming events and forks them to either the world or menu depending on which is being used"""
@@ -29,13 +28,8 @@ class Start(Menu):
                     self.seed = str(random.randint(-1000000, 1000000))
                 else:
                     self.seed = self.seedbox.text
+                self.world = World(self.seed, self.mine_prob)
                 self.started = True
-                self.start()
-
-    def start(self):
-        """Keeps track of what is happening while the world is running"""
-        if self.seed != "":
-            pass
 
     def draw(self, mouse, new_mouse):
         """Draws either the world or the start menu on the screen depending on which is being used."""

@@ -19,7 +19,6 @@ class World:
         self.dragging = False
         self.manager = BoardManager(self.tiles, seed, mine_prob)
         self.camera = Camera()
-        self.font = pygame.font.Font(None, 64)
 
     def reveal(self, x, y):
         """Directly reveals a single tile. Also capable of calling floodRev()."""
@@ -44,6 +43,9 @@ class World:
             return
 
         stack = [(x, y)]
+        for i, j in area(x,y):
+            stack.append((i,j))
+            
         while stack: # Uses a stack rather than a for loop for efficiency
             cx, cy = stack.pop()
             tile = self.manager.getTile(cx, cy)
@@ -78,7 +80,19 @@ class World:
             if event.button == 1:
                 pos = pygame.mouse.get_pos()
                 x,y = self.camera.stow(pos[0],pos[1])
-                self.reveal(x,y)
+                if self.tiles == {}:
+                    self.manager.origin = (x,y)
+                if not self.manager.getTile(x,y).flagged:
+                    self.reveal(x,y)
+                    self.needs_update = True
+            if event.button == 2:
+                pos = pygame.mouse.get_pos()
+                x,y = self.camera.stow(pos[0],pos[1])
+                tile = self.manager.getTile(x,y)
+                if tile.flagged == False:
+                    tile.flagged = True
+                else:
+                    tile.flagged = False
                 self.needs_update = True
             if event.button == 3:
                 self.dragging = True
@@ -100,6 +114,7 @@ class World:
 
             self.needs_update = False
             screen.fill((50,50,50))
+            font = pygame.font.Font(None, int(self.camera.spacing/2))
 
             # Display every tile on the screen
             for x in range(math.floor(1200/(self.camera.spacing))+2):
@@ -107,13 +122,16 @@ class World:
                     tx = x*self.camera.spacing - self.camera.x%self.camera.spacing
                     ty = y*self.camera.spacing - self.camera.y%self.camera.spacing
                     tile_coords = self.camera.stow(tx+self.camera.spacing/3, ty+self.camera.spacing/3)
-                    tile = self.manager.getTile(tile_coords[0], tile_coords[1])
+                    tile = self.tiles.get((tile_coords[0], tile_coords[1]))
 
                     color = (200,200,200)
-                    if tile.revealed:
-                        color = (150,150,150)
-                        if tile.mine:
-                            color = (255,0,0)
+                    if tile:
+                        if tile.revealed:
+                            color = (150,150,150)
+                            if tile.mine:
+                                color = (255,0,0)
+                        elif tile.flagged:
+                            color = (255, 255, 0)
                     # Create the tile
                     pygame.draw.rect(
                         screen, color, 
@@ -121,11 +139,12 @@ class World:
                     )
 
                     # Create the number indicator
-                    mines = self.manager.parseNeighbors(x,y)["mines"]
-                    if mines and tile.revealed and not tile.mine:
-                        text_surface = self.font.render(str(mines), True, (0,0,0))
-                        tx += (self.camera.tile_size - text_surface.get_width()) // 2
-                        ty += (self.camera.tile_size - text_surface.get_height()) // 2
-                        screen.blit(text_surface, (tx, ty))
+                    if tile:
+                        mines = self.manager.parseNeighbors(tile_coords[0], tile_coords[1])["mines"]
+                        if mines and tile.revealed and not tile.mine:
+                            text_surface = font.render(str(mines), True, (0,0,0))
+                            tx += (self.camera.tile_size - text_surface.get_width()) // 2
+                            ty += (self.camera.tile_size - text_surface.get_height()) // 2
+                            screen.blit(text_surface, (tx, ty))
 
                     #TextBox(x*self.camera.spacing - self.camera.x%self.camera.spacing, y*self.camera.spacing - self.camera.y%self.camera.spacing, self.camera.tile_size, self.camera.tile_size, False, color=(200,200,200), text_color=(0, 0, 0), limit=1).draw(screen) This was too laggy
