@@ -22,9 +22,6 @@ class World:
 
     def reveal(self, x, y):
         """Directly reveals a single tile. Also capable of calling floodRev()."""
-        if self.game_over:
-            return
-
         tile = self.manager.getTile(x,y)
         mines = self.manager.parseNeighbors(x,y)["mines"]
 
@@ -39,9 +36,6 @@ class World:
 
     def floodRev(self, x, y):
         """If a tile has 0 surrounding mines, reveals surrounding tiles in a recursive flood effect."""
-        if self.game_over:
-            return
-
         stack = [(x, y)]
         for i, j in area(x,y):
             stack.append((i,j))
@@ -53,10 +47,6 @@ class World:
                 continue
 
             tile.revealed = True
-            if tile.mine:
-                self.game_over = True
-                return
-
             mines = self.manager.parseNeighbors(cx, cy)["mines"]
             if mines == 0:
                 for i, j in area(cx, cy):
@@ -77,23 +67,27 @@ class World:
     def handleEvent(self, event):
         """Handles incoming events for the world."""
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:
-                pos = pygame.mouse.get_pos()
-                x,y = self.camera.stow(pos[0],pos[1])
-                if self.tiles == {}:
-                    self.manager.origin = (x,y)
-                if not self.manager.getTile(x,y).flagged:
-                    self.reveal(x,y)
-                    self.needs_update = True
-            if event.button == 2:
-                pos = pygame.mouse.get_pos()
-                x,y = self.camera.stow(pos[0],pos[1])
-                tile = self.manager.getTile(x,y)
-                if tile.flagged == False:
-                    tile.flagged = True
-                else:
-                    tile.flagged = False
-                self.needs_update = True
+            if not self.game_over:
+                if event.button == 1:
+                    pos = pygame.mouse.get_pos()
+                    x,y = self.camera.stow(pos[0],pos[1])
+                    if self.tiles == {}:
+                        self.manager.origin = (x,y)
+                    if not self.manager.getTile(x,y).flagged:
+                        self.reveal(x,y)
+                        self.needs_update = True
+
+                if event.button == 2:
+                    pos = pygame.mouse.get_pos()
+                    x,y = self.camera.stow(pos[0],pos[1])
+                    tile = self.manager.getTile(x,y)
+                    if not tile.revealed:
+                        if tile.flagged == False:
+                            tile.flagged = True
+                        else:
+                            tile.flagged = False
+                        self.needs_update = True
+
             if event.button == 3:
                 self.dragging = True
 
@@ -109,8 +103,9 @@ class World:
         """Draws the viewable world on the screen"""
         if (self.dragging and mouse != new_mouse) or self.needs_update:
             # Drag movement
-            self.camera.x += (mouse[0] - new_mouse[0])
-            self.camera.y += (mouse[1] - new_mouse[1])
+            if self.dragging and mouse != new_mouse:
+                self.camera.x += (mouse[0] - new_mouse[0])
+                self.camera.y += (mouse[1] - new_mouse[1])
 
             self.needs_update = False
             screen.fill((50,50,50))

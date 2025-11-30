@@ -26,7 +26,7 @@ class Camera:
         old_spacing = old_tile_size * 9/8
 
         # Apply zoom
-        if scroll > 0 and self.tile_size < 600:
+        if scroll > 0 and self.tile_size < 1000:
             self.tile_size *= 9/8
         elif scroll < 0 and self.tile_size > 30:
             self.tile_size /= 9/8
