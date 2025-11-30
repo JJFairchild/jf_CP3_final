@@ -129,9 +129,9 @@ class World:
                         if tile.revealed:
                             color = (150,150,150)
                             if tile.mine:
-                                color = (255,0,0)
+                                color = (0,0,0)
                         elif tile.flagged:
-                            color = (255, 255, 0)
+                            color = (255, 0, 0)
                     # Create the tile
                     pygame.draw.rect(
                         screen, color, 
