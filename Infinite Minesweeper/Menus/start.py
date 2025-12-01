@@ -1,4 +1,5 @@
 import random
+import time
 
 from Menus.menu import Menu
 from Minesweeper.world import World
@@ -29,11 +30,12 @@ class Start(Menu):
                     self.seed = self.seedbox.text
                 self.world = World(self.seed, self.mine_prob)
                 self.started = True
+                self.start_time = time.time()
 
     def draw(self, mouse, new_mouse):
         """Draws either the world or the start menu on the screen depending on which is being used."""
         if self.started:
-            self.world.draw(self.screen, mouse, new_mouse)
+            self.world.draw(self.screen, mouse, new_mouse, self.start_time)
         else:
             if self.seedbox.text == "" and self.button.text != "Generate seed for me":
                 self.button  = Button(350, 570, 500, 80, text="Generate seed for me", size=50)

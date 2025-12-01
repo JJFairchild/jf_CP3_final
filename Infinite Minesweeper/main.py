@@ -17,6 +17,7 @@ class Game:
         #from Menus.options import Options
 
         pygame.init()
+        pygame.display.set_caption("Infinite Minesweeper")
         screen = pygame.display.set_mode((1200, 1200))
         start = Start(screen, 0.15)
         mouse = pygame.mouse.get_pos()
@@ -39,5 +40,4 @@ class Game:
             mouse = pygame.mouse.get_pos()
 
 if __name__ == "__main__" and running:
-    game = Game()
-    game.run()
+    Game().run()

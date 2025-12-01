@@ -1,4 +1,5 @@
 import math
+import time
 
 from Minesweeper.board_manager import BoardManager
 from Minesweeper.camera import Camera
@@ -17,6 +18,8 @@ class World:
         self.game_over = False
         self.needs_update = True
         self.dragging = False
+        self.tilecount = 0
+        self.flagcount = 0
         self.manager = BoardManager(self.tiles, seed, mine_prob)
         self.camera = Camera()
 
@@ -27,6 +30,7 @@ class World:
 
         if not tile.revealed:
             tile.revealed = True
+            self.tilecount += 1
             if tile.mine:
                 self.game_over = True
             elif mines == 0:
@@ -47,6 +51,7 @@ class World:
                 continue
 
             tile.revealed = True
+            self.tilecount += 1
             mines = self.manager.parseNeighbors(cx, cy)["mines"]
             if mines == 0:
                 for i, j in area(cx, cy):
@@ -84,8 +89,10 @@ class World:
                     if not tile.revealed:
                         if tile.flagged == False:
                             tile.flagged = True
+                            self.flagcount += 1
                         else:
                             tile.flagged = False
+                            self.flagcount -= 1
                         self.needs_update = True
 
             if event.button == 3:
@@ -99,7 +106,7 @@ class World:
         if event.type == pygame.MOUSEBUTTONUP and event.button == 3:
             self.dragging = False
 
-    def draw(self, screen, mouse, new_mouse):
+    def draw(self, screen, mouse, new_mouse, start_time):
         """Draws the viewable world on the screen"""
         if (self.dragging and mouse != new_mouse) or self.needs_update:
             # Drag movement
@@ -142,4 +149,8 @@ class World:
                             ty += (self.camera.tile_size - text_surface.get_height()) // 2
                             screen.blit(text_surface, (tx, ty))
 
-                    #TextBox(x*self.camera.spacing - self.camera.x%self.camera.spacing, y*self.camera.spacing - self.camera.y%self.camera.spacing, self.camera.tile_size, self.camera.tile_size, False, color=(200,200,200), text_color=(0, 0, 0), limit=1).draw(screen) This was too laggy
+        # Display overlays
+        time = round(time.time()-start_time, 1) if self.game_over == False else time = ???
+        TextBox(75, 25, 300, 75, False, str(self.tilecount), (50,50,50), (200,200,200), size=50).draw(screen)
+        TextBox(450, 25, 300, 75, False, str(round(time.time()-start_time, 1)), (50,50,50), (200,200,200), size=50).draw(screen)
+        TextBox(825, 25, 300, 75, False, str(self.flagcount), (50,50,50), (200,200,200), size=50).draw(screen)
