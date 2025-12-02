@@ -20,6 +20,7 @@ class World:
         self.dragging = False
         self.tilecount = 0
         self.flagcount = 0
+        self.timer = 0
         self.manager = BoardManager(self.tiles, seed, mine_prob)
         self.camera = Camera()
 
@@ -150,7 +151,8 @@ class World:
                             screen.blit(text_surface, (tx, ty))
 
         # Display overlays
-        time = round(time.time()-start_time, 1) if self.game_over == False else time = ???
-        TextBox(75, 25, 300, 75, False, str(self.tilecount), (50,50,50), (200,200,200), size=50).draw(screen)
-        TextBox(450, 25, 300, 75, False, str(round(time.time()-start_time, 1)), (50,50,50), (200,200,200), size=50).draw(screen)
-        TextBox(825, 25, 300, 75, False, str(self.flagcount), (50,50,50), (200,200,200), size=50).draw(screen)
+        if not self.game_over:
+            self.timer = round(time.time()-start_time, 1)
+        TextBox(75, 25, 300, 75, False, str(self.tilecount), (75,75,75), (200,200,200), size=50).draw(screen)
+        TextBox(450, 25, 300, 75, False, str(self.timer), (75,75,75), (200,200,200), size=50).draw(screen)
+        TextBox(825, 25, 300, 75, False, str(self.flagcount), (75,75,75), (200,200,200), size=50).draw(screen)

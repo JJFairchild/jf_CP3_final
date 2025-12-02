@@ -1,0 +1,1 @@
+#sqrt(tiles * mines) / time

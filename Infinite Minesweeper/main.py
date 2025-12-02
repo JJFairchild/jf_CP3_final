@@ -8,10 +8,11 @@ except:
     print("Failed to import pygame. Type 'pip install pygame' into the terminal.")
     running = False
 
-class Game:
+class Main:
     """Main class"""
     def run(self):
         """Runs the game"""
+        from Menus.game import Game
         from Menus.start import Start
         #from Menus.leaderboard import Leaderboard
         #from Menus.options import Options
@@ -19,8 +20,9 @@ class Game:
         pygame.init()
         pygame.display.set_caption("Infinite Minesweeper")
         screen = pygame.display.set_mode((1200, 1200))
-        start = Start(screen, 0.15)
         mouse = pygame.mouse.get_pos()
+
+        start = Game(screen, 0.15)
 
         running = True
         while running:
@@ -40,4 +42,4 @@ class Game:
             mouse = pygame.mouse.get_pos()
 
 if __name__ == "__main__" and running:
-    Game().run()
+    Main().run()
