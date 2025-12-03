@@ -5,6 +5,7 @@ from Menus.menu import Menu
 from Minesweeper.world import World
 from Miscellaneous.button import Button
 from Miscellaneous.textbox import TextBox
+from Miscellaneous.file_handling import *
 
 class Game(Menu):
     """Handles switching between the start game screen and the world"""
@@ -16,12 +17,20 @@ class Game(Menu):
         self.seed = ""
         self.seedbox = TextBox(300, 450, 600, 60, mutable=True, limit=25)
         self.button = Button(350, 570, 500, 80, text="Generate seed for me", size=50)
-        self.back = Button(20,20, 100, 50, text="Back", size=50)
+        self.quit = Button(1080, 1130, 100, 50, text="Save and exit", size=50)
 
     def handleEvent(self, event):
         """Handles incoming events and forks them to either the world or menu depending on which is being used"""
         if self.started:
             self.world.handleEvent(event)
+
+            if self.world.game_over:
+                pass # handle events for game over ui here
+            else:
+                if self.quit.handleEvent(event):
+                    writeGame(self.world.tiles)
+                    return "start"
+
         else:
             self.seedbox.handleEvent(event)
 
@@ -37,10 +46,17 @@ class Game(Menu):
             if self.back.handleEvent(event):
                 pass
 
+        return "game"
+
     def draw(self, mouse, new_mouse):
         """Draws either the world or the start menu on the screen depending on which is being used."""
         if self.started:
             self.world.draw(self.screen, mouse, new_mouse, self.start_time)
+
+            if self.world.game_over:
+                pass # draw game over ui here
+            else:
+                self.quit.draw(self.screen)
         else:
             if self.seedbox.text == "" and self.button.text != "Generate seed for me":
                 self.button  = Button(350, 570, 500, 80, text="Generate seed for me", size=50)

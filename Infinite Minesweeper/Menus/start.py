@@ -1,5 +1,6 @@
 from Menus.menu import Menu
 from Miscellaneous.button import Button
+from Miscellaneous.file_handling import *
 
 import pygame
 
@@ -7,7 +8,7 @@ class Start(Menu):
     def __init__(self, screen):
         self.screen = screen
         self.savedgame = False
-        self.button = Button(350, 570, 500, 80, text="Generate seed for me", size=50)
+        self.newgame = Button(350, 570, 500, 80, text="New Game", size=50)
 
     def handleEvent(self, event):
         pass
