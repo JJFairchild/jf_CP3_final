@@ -17,7 +17,8 @@ class Game(Menu):
         self.seed = ""
         self.seedbox = TextBox(300, 450, 600, 60, mutable=True, limit=25)
         self.button = Button(350, 570, 500, 80, text="Generate seed for me", size=50)
-        self.quit = Button(1080, 1130, 100, 50, text="Save and exit", size=50)
+        self.quit = Button(930, 1130, 250, 50, (75,75,75), "Save and exit", (200,200,200), 50)
+        self.back = Button(50, 50, 100, 50, text="Back", size=50)
 
     def handleEvent(self, event):
         """Handles incoming events and forks them to either the world or menu depending on which is being used"""
@@ -44,7 +45,7 @@ class Game(Menu):
                 self.start_time = time.time()
             
             if self.back.handleEvent(event):
-                pass
+                return "start"
 
         return "game"
 
@@ -59,10 +60,10 @@ class Game(Menu):
                 self.quit.draw(self.screen)
         else:
             if self.seedbox.text == "" and self.button.text != "Generate seed for me":
-                self.button  = Button(350, 570, 500, 80, text="Generate seed for me", size=50)
+                self.button = Button(350, 570, 500, 80, text="Generate seed for me", size=50)
 
             elif self.seedbox.text != "" and self.button.text != "Start":
-                self.button  = Button(350, 570, 500, 80, text="Start", size=50)
+                self.button = Button(350, 570, 500, 80, text="Start", size=50)
 
             self.screen.fill((60,60,60))
             self.button.draw(self.screen)

@@ -7,7 +7,7 @@ def readLeaderboard():
     """Reads the leaderboard and saves it to a list."""
     users = []
 
-    with open('Infinite Minesweeper/Miscellaneous/leaderboard.csv', 'r', newline='') as file:
+    with open('jf_CP3_final/Infinite Minesweeper/Miscellaneous/leaderboard.csv', 'r', newline='') as file:
         reader = csv.reader(file)
         next(reader)
 
@@ -18,7 +18,7 @@ def readLeaderboard():
 
 def writeLeaderboard(leaderboard):
     """Writes to the leaderboard save."""
-    with open('Infinite Minesweeper/Miscellaneous/leaderboard.csv', 'w', newline='') as file:
+    with open('jf_CP3_final/Infinite Minesweeper/Miscellaneous/leaderboard.csv', 'w', newline='') as file:
         writer = csv.writer(file)
 
         writer.writerow(["user", "tiles", "time", "mines"])
@@ -30,7 +30,7 @@ def readGame():
     """Reads the current saved game and saves it to a dict."""
     tiles = {}
 
-    with open('Infinite Minesweeper/Miscellaneous/saved_game.csv', 'r', newline='') as file:
+    with open('jf_CP3_final/Infinite Minesweeper/Miscellaneous/saved_game.csv', 'r', newline='') as file:
         reader = csv.reader(file)
         next(reader) # skip the header
 
@@ -41,7 +41,7 @@ def readGame():
 
 def writeGame(tiles):
     """Writes to the board save."""
-    with open('Infinite Minesweeper/Miscellaneous/saved_game.csv', 'w', newline='') as file:
+    with open('jf_CP3_final/Infinite Minesweeper/Miscellaneous/saved_game.csv', 'w', newline='') as file:
         writer = csv.writer(file)
 
         writer.writerow(["x", "y", "mine"])

@@ -1,12 +1,12 @@
 # Jonas Fairchild, Infinite Minesweeper
 
 # Ensures that pygame exists before trying to use it.
-running = True
+run = True
 try:
     import pygame
 except:
     print("Failed to import pygame. Type 'pip install pygame' into the terminal.")
-    running = False
+    run = False
 
 class Main:
     """Main class"""
@@ -14,7 +14,7 @@ class Main:
         """Runs the game"""
         from Menus.game import Game
         from Menus.start import Start
-        #from Menus.leaderboard import Leaderboard
+        from Menus.leaderboard import Leaderboard
         #from Menus.options import Options
 
         pygame.init()
@@ -22,7 +22,11 @@ class Main:
         screen = pygame.display.set_mode((1200, 1200))
         mouse = pygame.mouse.get_pos()
 
-        start = Game(screen, 0.15)
+        game = Game(screen, 0.15)
+        start = Start(screen)
+        leaderboard = Leaderboard(screen)
+
+        menu = "start"
 
         running = True
         while running:
@@ -32,14 +36,24 @@ class Main:
                 if event.type == pygame.QUIT:
                     running = False
                     
-                start.handleEvent(event)
+                match menu:
+                    case "start":
+                        menu = start.handleEvent(event)
+                        if menu == "quit":
+                            running = False
+                    case "game":
+                        menu = game.handleEvent(event)
 
             new_mouse = pygame.mouse.get_pos()
 
-            start.draw(mouse, new_mouse)
+            match menu:
+                case "start":
+                    start.draw()
+                case "game":
+                    game.draw(mouse, new_mouse)
             pygame.display.flip()
 
             mouse = pygame.mouse.get_pos()
 
-if __name__ == "__main__" and running:
+if __name__ == "__main__" and run:
     Main().run()
