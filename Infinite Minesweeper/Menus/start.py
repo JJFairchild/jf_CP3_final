@@ -3,8 +3,6 @@ from Miscellaneous.button import Button
 from Miscellaneous.textbox import TextBox
 from Miscellaneous.file_handling import *
 
-import pygame
-
 class Start(Menu):
     def __init__(self, screen):
         self.screen = screen
@@ -18,6 +16,8 @@ class Start(Menu):
         self.quit = Button(350, 900, 500, 80, text="Quit", size=50)
 
     def handleEvent(self, event):
+        if self.cont.handleEvent(event):
+            return "cont"
         if self.newgame.handleEvent(event):
             return "game"
         if self.quit.handleEvent(event):

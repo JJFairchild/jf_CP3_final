@@ -28,6 +28,11 @@ class Button:
             self._pressed_inside = False
 
         return False
+    
+    def collidepoint(self, mouse):
+        if self.rect.collidepoint(mouse):
+            return True
+        return False
 
     def draw(self, screen):
         """Creates the button on the screen"""

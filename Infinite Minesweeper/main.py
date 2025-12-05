@@ -8,6 +8,8 @@ except:
     print("Failed to import pygame. Type 'pip install pygame' into the terminal.")
     run = False
 
+from Miscellaneous.file_handling import *
+
 class Main:
     """Main class"""
     def run(self):
@@ -41,8 +43,15 @@ class Main:
                         menu = start.handleEvent(event)
                         if menu == "quit":
                             running = False
+                        if menu == "cont":
+                            tiles, seed, tilecount, time, mines, x, y = readGame()
+                            game = Game(screen, 0.15, tiles, seed, tilecount, time, mines, (x,y))
+                            menu = "game"
                     case "game":
-                        menu = game.handleEvent(event)
+                        menu = game.handleEvent(event, mouse)
+                        if menu == "refresh":
+                            game = Game(screen, 0.15)
+                            menu = "start"
 
             new_mouse = pygame.mouse.get_pos()
 

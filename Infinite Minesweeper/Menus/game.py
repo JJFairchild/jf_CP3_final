@@ -9,38 +9,38 @@ from Miscellaneous.file_handling import *
 
 class Game(Menu):
     """Handles switching between the start game screen and the world"""
-    def __init__(self, screen, mine_prob):
+    def __init__(self, screen, mine_prob, tiles={}, seed="", tilecount=0, timer=0, mines=0):
         """Initializes necessary values and objects"""
         self.screen = screen
-        self.mine_prob = mine_prob
         self.started = False
-        self.seed = ""
+        self.world = World(seed, mine_prob, tiles, tilecount, timer, mines)
         self.seedbox = TextBox(300, 450, 600, 60, mutable=True, limit=25)
         self.button = Button(350, 570, 500, 80, text="Generate seed for me", size=50)
-        self.quit = Button(930, 1130, 250, 50, (75,75,75), "Save and exit", (200,200,200), 50)
+        self.quit = Button(900, 1105, 280, 75, (75,75,75), "Save and exit", (200,200,200), 50)
         self.back = Button(50, 50, 100, 50, text="Back", size=50)
 
-    def handleEvent(self, event):
+    def handleEvent(self, event, mouse):
         """Handles incoming events and forks them to either the world or menu depending on which is being used"""
         if self.started:
-            self.world.handleEvent(event)
+            if not self.quit.collidepoint(mouse):
+                self.world.handleEvent(event)
 
             if self.world.game_over:
                 pass # handle events for game over ui here
             else:
                 if self.quit.handleEvent(event):
-                    writeGame(self.world.tiles)
-                    return "start"
+                    writeGame(self.world.tiles) # UPDATE THIS ITS THE MOST IMPORTANT
+                    return "refresh"
 
         else:
             self.seedbox.handleEvent(event)
 
             if self.button.handleEvent(event):
                 if self.button.text == "Generate seed for me":
-                    self.seed = str(random.randint(-1000000, 1000000))
+                    seed = str(random.randint(-1000000, 1000000))
                 else:
-                    self.seed = self.seedbox.text
-                self.world = World(self.seed, self.mine_prob)
+                    seed = self.seedbox.text
+                self.world.seed = seed
                 self.started = True
                 self.start_time = time.time()
             
