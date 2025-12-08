@@ -10,16 +10,15 @@ import pygame
 
 class World:
     """Handles Infinite Minesweeper logic"""
-    def __init__(self, seed, mine_prob, tiles={}, tilecount=0, timer=0, flagcount=0, origin=False):
+    def __init__(self, seed, mine_prob, tiles={}, start_time = time.time(), tilecount=0, timer=0, flagcount=0, origin=False):
         """Initializes necessary components for use in World methods."""
         self.seed = seed
         self.mine_prob = mine_prob
         self.tiles = tiles
+        self.start_time = start_time
         self.tilecount = tilecount
         self.flagcount = flagcount
         self.timer = timer
-        if origin:
-            self.origin = origin
 
         self.game_over = False
         self.needs_update = True
@@ -27,6 +26,9 @@ class World:
         
         self.manager = BoardManager(tiles, seed, mine_prob)
         self.camera = Camera()
+
+        if origin:
+            self.manager.origin = origin
 
     def reveal(self, x, y):
         """Directly reveals a single tile. Also capable of calling floodRev()."""
@@ -111,7 +113,7 @@ class World:
         if event.type == pygame.MOUSEBUTTONUP and event.button == 3:
             self.dragging = False
 
-    def draw(self, screen, mouse, new_mouse, start_time):
+    def draw(self, screen, mouse, new_mouse):
         """Draws the viewable world on the screen"""
         if (self.dragging and mouse != new_mouse) or self.needs_update:
             # Drag movement
@@ -156,7 +158,7 @@ class World:
 
         # Display overlays
         if not self.game_over:
-            self.timer = round(time.time()-start_time, 1)
+            self.timer = round(time.time()-self.start_time, 1)
         TextBox(75, 25, 300, 75, False, str(self.tilecount), (75,75,75), (200,200,200), size=50).draw(screen)
         TextBox(450, 25, 300, 75, False, str(self.timer), (75,75,75), (200,200,200), size=50).draw(screen)
         TextBox(825, 25, 300, 75, False, str(self.flagcount), (75,75,75), (200,200,200), size=50).draw(screen)

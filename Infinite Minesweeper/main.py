@@ -10,6 +10,8 @@ except:
 
 from Miscellaneous.file_handling import *
 
+import time
+
 class Main:
     """Main class"""
     def run(self):
@@ -44,13 +46,15 @@ class Main:
                         if menu == "quit":
                             running = False
                         if menu == "cont":
-                            tiles, seed, tilecount, time, mines, x, y = readGame()
-                            game = Game(screen, 0.15, tiles, seed, tilecount, time, mines, (x,y))
+                            tiles, start_time, seed, tilecount, timer, mines, origin = readGame()
+                            game = Game(screen, 0.15, tiles, start_time-timer, seed, tilecount, timer-time.time(), mines, origin)
+                            game.started = True
                             menu = "game"
                     case "game":
                         menu = game.handleEvent(event, mouse)
                         if menu == "refresh":
                             game = Game(screen, 0.15)
+                            start.gamesaved = True
                             menu = "start"
 
             new_mouse = pygame.mouse.get_pos()
