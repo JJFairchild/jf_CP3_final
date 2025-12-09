@@ -34,21 +34,21 @@ def readGame():
         next(reader)
 
         try:
-            start_time, seed, tilecount, time, mines, x, y = next(reader)
+            seed, tilecount, time, mines, x, y = next(reader)
         except StopIteration:
             return {}
 
         for row in reader:
             tiles[(int(row[0]), int(row[1]))] = Tile(int(row[0]), int(row[1]), bool(int(row[2])), bool(int(row[3])), bool(int(row[4])))
 
-    return tiles, float(start_time), seed, int(tilecount), float(time), int(mines), (int(x), int(y))
+    return tiles, seed, int(tilecount), float(time), int(mines), (int(x), int(y))
 
-def writeGame(tiles, start_time, seed, tilecount, time, mines, origin):
+def writeGame(tiles, seed, tilecount, time, mines, origin):
     """Writes to the board save."""
     with open('jf_CP3_final/Infinite Minesweeper/Miscellaneous/saved_game.csv', 'w', newline='') as file:
         writer = csv.writer(file)
 
         writer.writerow(["x", "y", "mine", "revealed", "flagged"])
-        writer.writerow([start_time, seed, tilecount, time, mines, origin[0], origin[1]])
+        writer.writerow([seed, tilecount, time, mines, origin[0], origin[1]])
         for tile in tiles.values():
             writer.writerow([tile.x, tile.y, int(tile.mine), int(tile.revealed), int(tile.flagged)])

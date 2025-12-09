@@ -19,7 +19,7 @@ class BoardManager:
                 return False
 
         r = random.Random(f"{self.seed}:{x}:{y}") # Deterministic randomness based on seed, x, and y.
-        return r.random() < self.mine_prob
+        return r.random() <= self.mine_prob
 
     def getTile(self, x, y):
         """Gets a specific tile and makes sure a tile always exists where it is needed."""

@@ -29,7 +29,7 @@ class Game(Menu):
                 pass # handle events for game over ui here
             else:
                 if self.quit.handleEvent(event):
-                    writeGame(self.world.tiles, self.start_time, self.world.seed, self.world.tilecount, self.world.timer, self.world.flagcount, self.world.manager.origin)
+                    writeGame(self.world.tiles, self.world.manager.seed, self.world.tilecount, self.world.timer, self.world.flagcount, self.world.manager.origin)
                     return "refresh"
 
         else:
@@ -40,10 +40,9 @@ class Game(Menu):
                     seed = str(random.randint(-1000000, 1000000))
                 else:
                     seed = self.seedbox.text
-                self.world.seed = seed
+                self.world.manager.seed = seed
                 self.started = True
                 self.start_time = time.time()
-                print(self.world.seed)
             
             if self.back.handleEvent(event):
                 return "start"

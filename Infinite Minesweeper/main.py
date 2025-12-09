@@ -46,8 +46,8 @@ class Main:
                         if menu == "quit":
                             running = False
                         if menu == "cont":
-                            tiles, start_time, seed, tilecount, timer, mines, origin = readGame()
-                            game = Game(screen, 0.15, tiles, start_time-timer, seed, tilecount, timer-time.time(), mines, origin)
+                            tiles, seed, tilecount, timer, mines, origin = readGame()
+                            game = Game(screen, 0.15, tiles, time.time()-timer, seed, tilecount, timer, mines, origin)
                             game.started = True
                             menu = "game"
                     case "game":

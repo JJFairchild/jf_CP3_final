@@ -12,7 +12,6 @@ class World:
     """Handles Infinite Minesweeper logic"""
     def __init__(self, seed, mine_prob, tiles={}, start_time = time.time(), tilecount=0, timer=0, flagcount=0, origin=False):
         """Initializes necessary components for use in World methods."""
-        self.seed = seed
         self.mine_prob = mine_prob
         self.tiles = tiles
         self.start_time = start_time
