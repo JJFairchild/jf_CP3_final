@@ -4,8 +4,7 @@ from Miscellaneous.textbox import TextBox
 from Miscellaneous.file_handling import *
 
 class Start(Menu):
-    def __init__(self, screen):
-        self.screen = screen
+    def __init__(self):
         self.savedgame = readGame()
         self.gamesaved = bool(self.savedgame)
         self.minesweeper = TextBox(200, 100, 800, 100, False, text="Infinite Minesweeper", size=75)
@@ -25,13 +24,13 @@ class Start(Menu):
     
         return "start"
 
-    def draw(self):
-        self.screen.fill((60,60,60))
+    def draw(self, screen):
+        screen.fill((60,60,60))
 
         if self.gamesaved:
-            self.cont.draw(self.screen)
-        self.minesweeper.draw(self.screen)
-        self.newgame.draw(self.screen)
-        self.leaderboard.draw(self.screen)
-        self.options.draw(self.screen)
-        self.quit.draw(self.screen)
+            self.cont.draw(screen)
+        self.minesweeper.draw(screen)
+        self.newgame.draw(screen)
+        self.leaderboard.draw(screen)
+        self.options.draw(screen)
+        self.quit.draw(screen)

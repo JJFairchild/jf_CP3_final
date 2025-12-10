@@ -10,15 +10,17 @@ import pygame
 
 class World:
     """Handles Infinite Minesweeper logic"""
-    def __init__(self, seed, mine_prob, tiles={}, start_time = time.time(), tilecount=0, timer=0, flagcount=0, origin=False):
+    def __init__(self, seed, mine_prob, tiles=None, start_time = time.time(), tilecount=0, flagcount=0, origin=False):
         """Initializes necessary components for use in World methods."""
         self.mine_prob = mine_prob
+        if tiles is None:
+            tiles = {}
         self.tiles = tiles
         self.start_time = start_time
         self.tilecount = tilecount
         self.flagcount = flagcount
-        self.timer = timer
-
+        
+        self.timer = 0
         self.game_over = False
         self.needs_update = True
         self.dragging = False

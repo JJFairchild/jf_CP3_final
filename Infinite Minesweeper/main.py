@@ -26,9 +26,9 @@ class Main:
         screen = pygame.display.set_mode((1200, 1200))
         mouse = pygame.mouse.get_pos()
 
-        game = Game(screen, 0.15)
-        start = Start(screen)
-        leaderboard = Leaderboard(screen)
+        game = Game(0.15)
+        start = Start()
+        leaderboard = Leaderboard()
 
         menu = "start"
 
@@ -47,23 +47,28 @@ class Main:
                             running = False
                         if menu == "cont":
                             tiles, seed, tilecount, timer, mines, origin = readGame()
-                            game = Game(screen, 0.15, tiles, time.time()-timer, seed, tilecount, timer, mines, origin)
+                            game = Game(0.15, tiles, time.time()-timer, seed, tilecount, mines, origin)
                             game.started = True
                             menu = "game"
                     case "game":
                         menu = game.handleEvent(event, mouse)
                         if menu == "refresh":
-                            game = Game(screen, 0.15)
+                            game = Game(0.15)
                             start.gamesaved = True
+                            menu = "start"
+                        if menu == "reset":
+                            clearGame()
+                            game = Game(0.15)
+                            start.gamesaved = False
                             menu = "start"
 
             new_mouse = pygame.mouse.get_pos()
 
             match menu:
                 case "start":
-                    start.draw()
+                    start.draw(screen)
                 case "game":
-                    game.draw(mouse, new_mouse)
+                    game.draw(screen, mouse, new_mouse)
             pygame.display.flip()
 
             mouse = pygame.mouse.get_pos()

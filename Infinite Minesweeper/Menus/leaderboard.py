@@ -3,11 +3,10 @@ from Miscellaneous.file_handling import *
 
 class Leaderboard(Menu):
     """Class for the leaderboard menu"""
-    def __init__(self, screen):
+    def __init__(self):
         """Initializes necessary values."""
-        self.screen = screen
         self.leaderboard = readLeaderboard()
     
-    def draw(self):
+    def draw(self, screen):
         """Draws the leaderboard on the screen"""
         pass
