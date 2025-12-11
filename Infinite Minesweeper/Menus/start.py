@@ -19,6 +19,10 @@ class Start(Menu):
             return "cont"
         if self.newgame.handleEvent(event):
             return "game"
+        if self.leaderboard.handleEvent(event):
+            return "leaderboard"
+        if self.options.handleEvent(event):
+            return "options"
         if self.quit.handleEvent(event):
             return "quit"
     

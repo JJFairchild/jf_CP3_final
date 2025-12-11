@@ -56,3 +56,23 @@ def clearGame():
         writer = csv.writer(file)
 
         writer.writerow(["x", "y", "mine", "revealed", "flagged"])
+
+def readOptions():
+    """Returns the saved options in list format."""
+    options = []
+
+    with open('jf_CP3_final/Infinite Minesweeper/Miscellaneous/options.csv', 'r', newline='') as file:
+        reader = csv.reader(file)
+        next(reader)
+
+        mine_prob, _ = next(reader)
+        
+    return float(mine_prob)
+
+def writeOptions(mine_prob):
+    """Saves the options"""
+    with open('jf_CP3_final/Infinite Minesweeper/Miscellaneous/options.csv', 'w', newline='') as file:
+        writer = csv.writer(file)
+
+        writer.writerow(["mine_prob"])
+        writer.writerow([mine_prob, "_"])

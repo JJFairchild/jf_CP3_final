@@ -19,14 +19,15 @@ class Main:
         from Menus.game import Game
         from Menus.start import Start
         from Menus.leaderboard import Leaderboard
-        #from Menus.options import Options
+        from Menus.options import Options
 
         pygame.init()
         pygame.display.set_caption("Infinite Minesweeper")
         screen = pygame.display.set_mode((1200, 1200))
         mouse = pygame.mouse.get_pos()
 
-        game = Game(0.15)
+        options = Options()
+        game = Game(options.mine_prob)
         start = Start()
         leaderboard = Leaderboard()
 
@@ -47,20 +48,24 @@ class Main:
                             running = False
                         if menu == "cont":
                             tiles, seed, tilecount, timer, mines, origin = readGame()
-                            game = Game(0.15, tiles, time.time()-timer, seed, tilecount, mines, origin)
+                            game = Game(options.mine_prob, tiles, time.time()-timer, seed, tilecount, mines, origin)
                             game.started = True
                             menu = "game"
                     case "game":
                         menu = game.handleEvent(event, mouse)
                         if menu == "refresh":
-                            game = Game(0.15)
+                            game = Game(options.mine_prob)
                             start.gamesaved = True
                             menu = "start"
                         if menu == "reset":
                             clearGame()
-                            game = Game(0.15)
+                            game = Game(options.mine_prob)
                             start.gamesaved = False
                             menu = "start"
+                    case "leaderboard":
+                        menu = leaderboard.handleEvent(event)
+                    case "options":
+                        menu = options.handleEvent(event)
 
             new_mouse = pygame.mouse.get_pos()
 
@@ -69,6 +74,10 @@ class Main:
                     start.draw(screen)
                 case "game":
                     game.draw(screen, mouse, new_mouse)
+                case "leaderboard":
+                    leaderboard.draw(screen)
+                case "options":
+                    options.draw(screen)
             pygame.display.flip()
 
             mouse = pygame.mouse.get_pos()
