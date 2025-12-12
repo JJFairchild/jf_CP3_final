@@ -27,7 +27,7 @@ class Main:
         mouse = pygame.mouse.get_pos()
 
         options = Options()
-        game = Game(options.mine_prob)
+        game = Game(options.options["mine_prob"])
         start = Start()
         leaderboard = Leaderboard()
 
@@ -48,18 +48,18 @@ class Main:
                             running = False
                         if menu == "cont":
                             tiles, seed, tilecount, timer, mines, origin = readGame()
-                            game = Game(options.mine_prob, tiles, time.time()-timer, seed, tilecount, mines, origin)
+                            game = Game(options.options["mine_prob"], tiles, time.time()-timer, seed, tilecount, mines, origin)
                             game.started = True
                             menu = "game"
                     case "game":
                         menu = game.handleEvent(event, mouse)
                         if menu == "refresh":
-                            game = Game(options.mine_prob)
+                            game = Game(options.options["mine_prob"])
                             start.gamesaved = True
                             menu = "start"
                         if menu == "reset":
                             clearGame()
-                            game = Game(options.mine_prob)
+                            game = Game(options.options["mine_prob"])
                             start.gamesaved = False
                             menu = "start"
                     case "leaderboard":

@@ -67,7 +67,7 @@ def readOptions():
 
         mine_prob, _ = next(reader)
         
-    return float(mine_prob)
+    return {"mine_prob": float(mine_prob)}
 
 def writeOptions(mine_prob):
     """Saves the options"""
