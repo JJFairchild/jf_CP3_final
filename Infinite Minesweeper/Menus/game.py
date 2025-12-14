@@ -7,6 +7,8 @@ from Miscellaneous.button import Button
 from Miscellaneous.textbox import TextBox
 from Miscellaneous.file_handling import *
 
+import pygame
+
 class Game(Menu):
     """Handles switching between the start game screen and the world"""
     def __init__(self, mine_prob, tiles=None, start_time=time.time(), seed="", tilecount=0, mines=0, origin=False):
@@ -18,6 +20,7 @@ class Game(Menu):
 
         self.world = World(seed, mine_prob, tiles, start_time, tilecount, mines, origin)
         self.seedbox = TextBox(300, 450, 600, 60, mutable=True, limit=25)
+        self.game_over = TextBox(25, 1105, 400, 75, False, "GAME OVER", (75,75,75), (200,200,200), size=50)
         self.button = Button(350, 570, 500, 80, text="Generate seed for me", size=50)
         self.quit = Button(900, 1105, 280, 75, (75,75,75), "Save and exit", (200,200,200), 50)
         self.back = Button(50, 50, 100, 50, text="Back", size=50)
@@ -66,7 +69,8 @@ class Game(Menu):
             self.quit.draw(screen)
 
             if self.world.game_over:
-                pass # draw game over ui here
+                self.game_over.draw(screen)
+
         else:
             if self.seedbox.text == "" and self.button.text != "Generate seed for me":
                 self.button = Button(350, 570, 500, 80, text="Generate seed for me", size=50)

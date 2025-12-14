@@ -17,17 +17,20 @@ class Options(Menu):
         self.keybinds = TextBox(150,150,900,50, False, "Controls (no keybind customization): LMB = reveal, MMB = flag, RMB = drag, Scroll wheel = zoom", size=25)
         self.minetext = TextBox(50,300,200,50, False, "Mine Probability")
         self.mineprob = TextBox(300,300,200,50, True, str(self.options["mine_prob"]))
-        if self.options["mine_prob"] <= 0.2:
-            text = "easy"
-        elif self.options["mine_prob"] <= 0.25:
-            text = "intermediate"
-        elif self.options["mine_prob"] <= 0.3:
-            text = "hard"
-        elif self.options["mine_prob"] <= 0.35:
-            text = "expert"
+
+        prob = self.options.get('mine_prob', 0)
+        if prob <= 0.15:
+            diff = 'easy'
+        elif prob <= 0.2:
+            diff = 'intermediate'
+        elif prob <= 0.25:
+            diff = 'hard'
+        elif prob <= 0.3:
+            diff = 'expert'
         else:
-            text = "impossible"
-        self.difficulty = TextBox(550,300,400,50, False, "Estimated difficulty: " + "easy" if self.options["mine_prob"] <= 0.2 else "intermediate" if self.options["mine_prob"] <= 0.25 else "hard" if self.options["mine_prob"] <= 0.3 else "expert" if self.options["mine_prob"] <= 0.35 else "impossible")
+            diff = 'impossible'
+        self.difficulty = TextBox(550, 300, 400, 50, False, f"Estimated difficulty: {diff}")
+
         self.note = TextBox(50,1050,1100,100, False, "Note: Updating options while a game is saved will delete the saved game.", size=40)
     
     def handleEvent(self, event):
@@ -46,7 +49,19 @@ class Options(Menu):
             if self.options != self.new_options:
                 clearGame()
                 self.options = copy.deepcopy(self.new_options)
-                self.difficulty = TextBox(550,300,400,50, False, f"Estimated difficulty: {"easy" if self.options["mine_prob"] <= 0.2 else "intermediate" if self.options["mine_prob"] <= 0.25 else "hard" if self.options["mine_prob"] <= 0.3 else "expert" if self.options["mine_prob"] <= 0.35 else "impossible"}")
+                prob = self.options.get('mine_prob', 0)
+                if prob <= 0.15:
+                    diff = 'easy'
+                elif prob <= 0.2:
+                    diff = 'intermediate'
+                elif prob <= 0.25:
+                    diff = 'hard'
+                elif prob <= 0.3:
+                    diff = 'expert'
+                else:
+                    diff = 'impossible'
+                self.difficulty = TextBox(550, 300, 400, 50, False, f"Estimated difficulty: {diff}")
+                writeOptions(self.options)
         
         return "options"
 

@@ -33,51 +33,87 @@ class Main:
 
         menu = "start"
 
+        # Helper functions and maps
+        def reset_start(): return Start()
+        def reset_game_default(): return Game(options.options["mine_prob"])
+        def reset_leaderboard(): return Leaderboard()
+        def reset_options(): return Options()
+
+        handlers = {
+            "start": lambda e: start.handleEvent(e),
+            "game":  lambda e: game.handleEvent(e, mouse),
+            "leaderboard": lambda e: leaderboard.handleEvent(e),
+            "options": lambda e: options.handleEvent(e)
+        }
+
+        drawers = {
+            "start": lambda: start.draw(screen),
+            "game": lambda: game.draw(screen, mouse, new_mouse),
+            "leaderboard": lambda: leaderboard.draw(screen),
+            "options": lambda: options.draw(screen)
+        }
+
+        resetters = {
+            "start": reset_start,
+            "game": reset_game_default,
+            "leaderboard": reset_leaderboard,
+            "options": reset_options
+        }
+
+        # Main loop
         running = True
         while running:
             # Events
             for event in pygame.event.get():
-                # Quit game
                 if event.type == pygame.QUIT:
                     running = False
+                    break
+
+                # Calls the current menu's event handler to get the new menu
+                new_menu = handlers.get(menu, lambda e: menu)(event) or menu
                     
-                match menu:
-                    case "start":
-                        menu = start.handleEvent(event)
-                        if menu == "quit":
-                            running = False
-                        if menu == "cont":
-                            tiles, seed, tilecount, timer, mines, origin = readGame()
-                            game = Game(options.options["mine_prob"], tiles, time.time()-timer, seed, tilecount, mines, origin)
-                            game.started = True
-                            menu = "game"
-                    case "game":
-                        menu = game.handleEvent(event, mouse)
-                        if menu == "refresh":
-                            game = Game(options.options["mine_prob"])
-                            start.gamesaved = True
-                            menu = "start"
-                        if menu == "reset":
-                            clearGame()
-                            game = Game(options.options["mine_prob"])
-                            start.gamesaved = False
-                            menu = "start"
-                    case "leaderboard":
-                        menu = leaderboard.handleEvent(event)
-                    case "options":
-                        menu = options.handleEvent(event)
+                # Handle the special transitions that require extra parameters/actions
+                if menu == "start":
+                    if new_menu == "cont":
+                        tiles, seed, tilecount, timer, mines, origin = readGame()
+                        game = Game(options.options["mine_prob"], tiles, time.time()-timer, seed, tilecount, mines, origin)
+                        game.started = True
+                        new_menu = "game"
+                    if new_menu == "quit":
+                        running = False
+                        break
 
+                if menu == "game":
+                    if new_menu == "refresh":
+                        game = resetters["game"]()
+                        start.gamesaved = True
+                        new_menu = "start"
+                    elif new_menu == "reset":
+                        clearGame()
+                        game = resetters["game"]()
+                        start.gamesaved = False
+                        new_menu = "start"
+
+                # Only reinitialize and switch if the menu is actually changing
+                if new_menu != menu:
+                    # Reinitialize the target menu before switching to it
+                    if new_menu in resetters:
+                        if new_menu == "game":
+                            if not game.started:
+                                game = resetters["game"]()
+                        else:
+                            # Re-create menus to ensure their data is up-to-date
+                            if new_menu == "start":
+                                start = resetters["start"]()
+                            elif new_menu == "leaderboard":
+                                leaderboard = resetters["leaderboard"]()
+                            elif new_menu == "options":
+                                options = resetters["options"]()
+                    menu = new_menu
+
+            # Drawing
             new_mouse = pygame.mouse.get_pos()
-
-            match menu:
-                case "start":
-                    start.draw(screen)
-                case "game":
-                    game.draw(screen, mouse, new_mouse)
-                case "leaderboard":
-                    leaderboard.draw(screen)
-                case "options":
-                    options.draw(screen)
+            drawers.get(menu, lambda: None)()
             pygame.display.flip()
 
             mouse = pygame.mouse.get_pos()

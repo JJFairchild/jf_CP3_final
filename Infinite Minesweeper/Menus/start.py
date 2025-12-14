@@ -15,7 +15,7 @@ class Start(Menu):
         self.quit = Button(350, 900, 500, 80, text="Quit", size=50)
 
     def handleEvent(self, event):
-        if self.cont.handleEvent(event):
+        if self.cont.handleEvent(event) and self.gamesaved:
             return "cont"
         if self.newgame.handleEvent(event):
             return "game"

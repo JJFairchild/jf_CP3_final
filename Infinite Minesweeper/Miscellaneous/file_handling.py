@@ -69,10 +69,10 @@ def readOptions():
         
     return {"mine_prob": float(mine_prob)}
 
-def writeOptions(mine_prob):
+def writeOptions(options):
     """Saves the options"""
     with open('jf_CP3_final/Infinite Minesweeper/Miscellaneous/options.csv', 'w', newline='') as file:
         writer = csv.writer(file)
 
         writer.writerow(["mine_prob"])
-        writer.writerow([mine_prob, "_"])
+        writer.writerow([options["mine_prob"], "_"])
